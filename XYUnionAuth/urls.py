@@ -19,7 +19,7 @@ from django.urls import path, re_path
 from drf_yasg2.views import get_schema_view
 from drf_yasg2 import openapi
 
-from XYUnionAuth.views import user
+from XYUnionAuth.views import user, permissions
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -40,5 +40,9 @@ urlpatterns = [
     # User
     path('user/login/', user.login),
     path('user/register/', user.register),
-    path('user/verify_token/', user.verify_token)
+    path('user/verify_token/', user.verify_token),
+    
+    # Permissions
+    path('permissions/policies/', permissions.policies),
+    path('permissions/check_permission/', permissions.check_permission)
 ]
