@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "xyunionauth"
+version = "0.0.1"
+description = "一种基于Casbin和ABAC权限模型的统一用户验证与权限管理的后端服务器。"
+authors = ["XYCode <xycode-xyc@outlook.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0.1"
+casbin = "^1.35.0"
+pymongo = "^4.6.1"
+python-dotenv = "^1.0.1"
+drf-yasg2 = "^1.19.4"
+djangorestframework = "^3.14.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
