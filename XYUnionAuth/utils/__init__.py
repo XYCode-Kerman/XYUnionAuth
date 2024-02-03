@@ -30,6 +30,5 @@ def check_permission(token: str, resource: str, action: str, environment_params:
         return False
 
     request = {**decoded_token, **environment_params}
-    enforcer.adapter.load_policy()
 
     return enforcer.enforce(request, resource, action)
