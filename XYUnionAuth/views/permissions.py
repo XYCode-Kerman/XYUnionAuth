@@ -3,6 +3,8 @@ import json
 import XYUnionAuth.utils as utils
 import os
 import pymongo
+import casbin_pymongo_adapter
+import casbin
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from bson.json_util import dumps
 
@@ -10,6 +12,11 @@ db = pymongo.MongoClient(os.environ['MONGODB_URI']).get_default_database()
 
 
 def policies(request: HttpRequest):
+    adapter = casbin_pymongo_adapter.Adapter(
+        os.environ['MONGODB_URI'], os.environ['DATABASE_NAME'], 'polices')
+
+    enforcer = casbin.Enforcer('casbin/abac_module.conf', adapter)
+
     token = json.loads(request.body).get('token', None)
 
     # 检查参数完整
@@ -27,7 +34,7 @@ def policies(request: HttpRequest):
             return JsonResponse({'error': 'Permission denied'}, status=403)
 
         return JsonResponse({
-            'polices': utils.enforcer.get_policy()
+            'polices': enforcer.get_policy()
         })
     elif request.method == 'POST':
         # 鉴权
@@ -35,7 +42,7 @@ def policies(request: HttpRequest):
             return JsonResponse({'error': 'Permission denied'}, status=403)
 
         data = json.loads(request.body)
-        utils.enforcer.add_policy(*data['policy'])
+        enforcer.add_policy(*data['policy'])
 
         return JsonResponse({'success': 'Policy added'})
     elif request.method == 'DELETE':
@@ -45,7 +52,7 @@ def policies(request: HttpRequest):
 
         data = json.loads(request.body)
 
-        utils.enforcer.remove_policy(*data['policy'])
+        enforcer.remove_policy(*data['policy'])
 
         return JsonResponse({'success': 'Policy deleted'})
     else:
